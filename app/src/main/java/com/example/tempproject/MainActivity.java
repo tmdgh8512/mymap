@@ -35,7 +35,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button button5;
     Button button6;
     Button button7;
-    boolean check = true;
+    Button button8;
+    Button button9;
+    Button button10;
+    Button button11;
+    Button button12;
+    Button button13;
+    Button button14;
+    boolean check1 = true;
+    boolean check2 = true;
+    boolean check3 = true;
+    boolean check4 = true;
+    boolean check5 = true;
+    boolean check6 = true;
+    boolean check7 = true;
+    boolean check8 = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +64,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         button5 = (Button) findViewById(R.id.button5);
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
+        button8 = (Button) findViewById(R.id.button8);
+        button9 = (Button) findViewById(R.id.button9);
+        button10 = (Button) findViewById(R.id.button10);
+        button11 = (Button) findViewById(R.id.button11);
+        button12 = (Button) findViewById(R.id.button12);
+        button13 = (Button) findViewById(R.id.button13);
+        button14 = (Button) findViewById(R.id.button14);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -59,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
-        invisiblesetup();
+        invisiblesetup1();
+        invisiblesetup2();
         mapFragment.getMapAsync(this);
 
     }
@@ -119,50 +141,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void ClickButton1(View v){
         mymap.setMapType(NaverMap.MapType.Hybrid);
         Toast.makeText(this, "Hybrid Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
 
     public void ClickButton2(View v){
         mymap.setMapType(NaverMap.MapType.Satellite);
         Toast.makeText(this, "Satellite Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
 
     public void ClickButton3(View v){
         mymap.setMapType(NaverMap.MapType.Navi);
         Toast.makeText(this, "Navi Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
 
     public void ClickButton4(View v){
         mymap.setMapType(NaverMap.MapType.Basic);
         Toast.makeText(this, "Basic Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
 
     public void ClickButton5(View v){
         mymap.setMapType(NaverMap.MapType.Terrain);
         Toast.makeText(this, "Terrain Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
 
     public void ClickButton6(View v){
         mymap.setMapType(NaverMap.MapType.None);
         Toast.makeText(this, "None Mode", Toast.LENGTH_SHORT).show();
+        LayerGroup_Off();
     }
     public void ClickButton7(View v){
 
-       if(check == true) {
-           visiblesetup();
-           check = false;
+       if(check1 == true) {
+           visiblesetup1();
+           check1 = false;
        } else {
-           invisiblesetup();
-           check = true;
+           invisiblesetup1();
+           check1 = true;
        }
 
     }
 
     public void ClickButton8(View v){
-        mymap.setMapType(NaverMap.MapType.Terrain);
-        Toast.makeText(this, "Terrain Mode", Toast.LENGTH_SHORT).show();
+
+        if(check2 == true) {
+            visiblesetup2();
+            check2 = false;
+        } else {
+            invisiblesetup2();
+            check2 = true;
+        }
+
     }
 
-    private void visiblesetup()
+    private void visiblesetup1()
     {
         button1.setVisibility(View.VISIBLE);
         button2.setVisibility(View.VISIBLE);
@@ -172,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         button6.setVisibility(View.VISIBLE);
     }
 
-    private void invisiblesetup()
+    private void invisiblesetup1()
     {
         button1.setVisibility(View.INVISIBLE);
         button2.setVisibility(View.INVISIBLE);
@@ -182,5 +217,100 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         button6.setVisibility(View.INVISIBLE);
     }
 
+    private void visiblesetup2()
+    {
+        button9.setVisibility(View.VISIBLE);
+        button10.setVisibility(View.VISIBLE);
+        button11.setVisibility(View.VISIBLE);
+        button12.setVisibility(View.VISIBLE);
+        button13.setVisibility(View.VISIBLE);
+        button14.setVisibility(View.VISIBLE);
+    }
+
+    private void invisiblesetup2()
+    {
+        button9.setVisibility(View.INVISIBLE);
+        button10.setVisibility(View.INVISIBLE);
+        button11.setVisibility(View.INVISIBLE);
+        button12.setVisibility(View.INVISIBLE);
+        button13.setVisibility(View.INVISIBLE);
+        button14.setVisibility(View.INVISIBLE);
+    }
+
+    public void ClickButton9(View v){
+        Toast.makeText(this, "Building", Toast.LENGTH_SHORT).show();
+        if (check3 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true);
+            check3 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, false);
+            check3 = true;
+        }
+    }
+
+    public void ClickButton10(View v){
+        Toast.makeText(this, "Traffic", Toast.LENGTH_SHORT).show();
+        if (check4 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRAFFIC, true);
+            check4 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRAFFIC, false);
+            check4 = true;
+        }
+    }
+
+    public void ClickButton11(View v){
+        Toast.makeText(this, "Transit", Toast.LENGTH_SHORT).show();
+        if (check5 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, true);
+            check5 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, false);
+            check5 = true;
+        }
+    }
+
+    public void ClickButton12(View v){
+        Toast.makeText(this, "Bicycle", Toast.LENGTH_SHORT).show();
+        if (check6 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true);
+            check6 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false);
+            check6 = true;
+        }
+    }
+
+    public void ClickButton13(View v){
+        Toast.makeText(this, "Mountain", Toast.LENGTH_SHORT).show();
+        if (check7 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, true);
+            check7 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false);
+            check7 = true;
+        }
+    }
+
+    public void ClickButton14(View v){
+        Toast.makeText(this, "Cadastral", Toast.LENGTH_SHORT).show();
+        if (check8 == true) {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, true);
+            check8 = false;
+        } else {
+            mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
+            check8 = true;
+        }
+    }
+
+    public void LayerGroup_Off() {
+
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, false);
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRAFFIC, false);
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_TRANSIT, false);
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false);
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false);
+        mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
+    }
 
 }
