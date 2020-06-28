@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.naver.maps.geometry.LatLng;
@@ -27,12 +28,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Marker marker2 = new Marker();
     Marker marker3 = new Marker();
 
+    Button button1;
+    Button button2;
+    Button button3;
+    Button button4;
+    Button button5;
+    Button button6;
+    Button button7;
+    boolean check = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // 가로화면 고정
         setContentView(R.layout.activity_main);
+        button1 = (Button) findViewById(R.id.button1);
+        button2 = (Button) findViewById(R.id.button2);
+        button3 = (Button) findViewById(R.id.button3);
+        button4 = (Button) findViewById(R.id.button4);
+        button5 = (Button) findViewById(R.id.button5);
+        button6 = (Button) findViewById(R.id.button6);
+        button7 = (Button) findViewById(R.id.button7);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -42,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
-
+        invisiblesetup();
         mapFragment.getMapAsync(this);
 
     }
@@ -129,9 +146,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, "None Mode", Toast.LENGTH_SHORT).show();
     }
     public void ClickButton7(View v){
-        marker1.setMap(null);
-        marker2.setMap(null);
-        marker3.setMap(null);
+
+       if(check == true) {
+           visiblesetup();
+           check = false;
+       } else {
+           invisiblesetup();
+           check = true;
+       }
 
     }
+
+    public void ClickButton8(View v){
+        mymap.setMapType(NaverMap.MapType.Terrain);
+        Toast.makeText(this, "Terrain Mode", Toast.LENGTH_SHORT).show();
+    }
+
+    private void visiblesetup()
+    {
+        button1.setVisibility(View.VISIBLE);
+        button2.setVisibility(View.VISIBLE);
+        button3.setVisibility(View.VISIBLE);
+        button4.setVisibility(View.VISIBLE);
+        button5.setVisibility(View.VISIBLE);
+        button6.setVisibility(View.VISIBLE);
+    }
+
+    private void invisiblesetup()
+    {
+        button1.setVisibility(View.INVISIBLE);
+        button2.setVisibility(View.INVISIBLE);
+        button3.setVisibility(View.INVISIBLE);
+        button4.setVisibility(View.INVISIBLE);
+        button5.setVisibility(View.INVISIBLE);
+        button6.setVisibility(View.INVISIBLE);
+    }
+
+
 }
