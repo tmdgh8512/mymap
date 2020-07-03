@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.pm.ActivityInfo;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,20 +15,31 @@ import android.widget.Toast;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.util.FusedLocationSource;
+
+import java.io.IOException;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     NaverMap mymap;
     private View v;
+
+    private String addr = "";
+    private FusedLocationSource locationSource;
+
     Marker marker1 = new Marker();
     Marker marker2 = new Marker();
     Marker marker3 = new Marker();
+    Marker marker4 = new Marker();
 
     Button button1;
     Button button2;
@@ -80,19 +93,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
         }
+
         invisiblesetup1();
         invisiblesetup2();
         mapFragment.getMapAsync(this);
+
+
 
     }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.mymap = naverMap;
+        LatLng coord1 = new LatLng(35.945378,126.682110);
 
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(35.945278, 126.682167)).animate(CameraAnimation.Easing,3000);
         naverMap.moveCamera(cameraUpdate);
 
+        mymap.setLocationSource(locationSource);
+        mymap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
         marker1.setPosition(new LatLng(35.945278, 126.682167)); // 군산대학교 좌표 마켓
         marker1.setMap(mymap);
@@ -100,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         marker2.setMap(mymap);
         marker3.setPosition(new LatLng(35.967604, 126.736843)); // 군산시청 좌표 마켓
         marker3.setMap(mymap);
+        marker4.setPosition(coord1);
+        marker4.setMap(mymap);
 
         InfoWindow infoWindow = new InfoWindow();
         infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter( this) {
@@ -110,12 +131,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        InfoWindow infowindow1 = new InfoWindow();
+        infowindow1.setAdapter(new InfoWindow.DefaultTextAdapter(this){
+            @NonNull
+            @Override
+            public CharSequence getText(@NonNull InfoWindow infowindow1){
+                return addr;
+            }
+        });
+
         marker1.setTag("군산대학교");
         marker2.setTag("전북외국어고등학교");
         marker3.setTag("군산시청");
 // 지도를 클릭하면 정보 창을 닫음
         naverMap.setOnMapClickListener((coord, point) -> {
             infoWindow.close();
+            infowindow1.close();
+            marker4.setPosition(point);
+            marker4.setMap(mymap);
+            getAddres(point);
+            infowindow1.open(marker4);
         });
 
 // 마커를 클릭하면:
@@ -312,5 +347,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false);
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
     }
+    public void getAddres(LatLng point){
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> list = null;
+
+        double d1 = point.latitude;
+        double d2 = point.longitude;
+        try{
+            list = geocoder.getFromLocation(
+                    d1,d2,1);
+        }catch(IOException e){
+            e.printStackTrace();
+
+            addr = "";
+        }
+
+        if(list!=null){
+
+            if(list.size()==0)
+                addr = "no address found";
+            else{
+                String[] addrarr = list.get(0).toString().split(",");
+                addr = addrarr[0].substring(addrarr[0].indexOf("\"")+1,addrarr[0].length()-2);
+            }
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,  @NonNull int[] grantResults) {
+        if (locationSource.onRequestPermissionsResult(
+                requestCode, permissions, grantResults)) {
+            if (!locationSource.isActivated()) { // 권한 거부됨
+                mymap.setLocationTrackingMode(LocationTrackingMode.None);
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(
+                requestCode, permissions, grantResults);
+    }
+
 
 }
