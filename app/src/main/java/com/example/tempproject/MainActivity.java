@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -149,7 +151,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             infowindow1.close();
             marker4.setPosition(point);
             marker4.setMap(mymap);
-            getAddres(point);
+
+            try {
+                addr = new GetAddress().execute(point).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d("STATE", addr);
             infowindow1.open(marker4);
         });
 
@@ -195,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mymap.setMapType(NaverMap.MapType.Basic);
         Toast.makeText(this, "Basic Mode", Toast.LENGTH_SHORT).show();
         LayerGroup_Off();
-    }
+}
 
     public void ClickButton5(View v){
         mymap.setMapType(NaverMap.MapType.Terrain);
@@ -347,45 +357,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false);
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
     }
-    public void getAddres(LatLng point){
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> list = null;
-
-        double d1 = point.latitude;
-        double d2 = point.longitude;
-        try{
-            list = geocoder.getFromLocation(
-                    d1,d2,1);
-        }catch(IOException e){
-            e.printStackTrace();
-
-            addr = "";
-        }
-
-        if(list!=null){
-
-            if(list.size()==0)
-                addr = "no address found";
-            else{
-                String[] addrarr = list.get(0).toString().split(",");
-                addr = addrarr[0].substring(addrarr[0].indexOf("\"")+1,addrarr[0].length()-2);
-            }
-
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,  @NonNull int[] grantResults) {
-        if (locationSource.onRequestPermissionsResult(
-                requestCode, permissions, grantResults)) {
-            if (!locationSource.isActivated()) { // 권한 거부됨
-                mymap.setLocationTrackingMode(LocationTrackingMode.None);
-            }
-            return;
-        }
-        super.onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
-    }
-
 
 }
