@@ -160,4 +160,26 @@
         app:layout_constraintStart_toEndOf="@+id/button13"
         app:layout_constraintTop_toTopOf="@+id/map" />
 
+    <Button
+        android:id="@+id/button15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="ClickButton15"
+        android:text="MarkersMode"
+        app:layout_constraintBottom_toTopOf="@+id/button8"
+        app:layout_constraintStart_toStartOf="@+id/map" />
+
+    <Button
+        android:id="@+id/button16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="ClickButton16"
+        android:text="mapView"
+        app:layout_constraintBottom_toTopOf="@+id/button15"
+        app:layout_constraintStart_toStartOf="@+id/map" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

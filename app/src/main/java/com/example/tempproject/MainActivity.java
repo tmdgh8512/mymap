@@ -20,12 +20,15 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.ArrowheadPathOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private String addr = "";
     private FusedLocationSource locationSource;
+    private ArrayList<Marker> markers = new ArrayList<Marker>();
+    private boolean marker_mode = true;
 
     Marker marker1 = new Marker();
     Marker marker2 = new Marker();
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button button12;
     Button button13;
     Button button14;
+    Button button15;
+    Button button16;
     boolean check1 = true;
     boolean check2 = true;
     boolean check3 = true;
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     boolean check6 = true;
     boolean check7 = true;
     boolean check8 = true;
+    private PolygonOverlay polygon = new PolygonOverlay();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         button12 = (Button) findViewById(R.id.button12);
         button13 = (Button) findViewById(R.id.button13);
         button14 = (Button) findViewById(R.id.button14);
+        button15 = (Button) findViewById(R.id.button15);
+        button16 = (Button) findViewById(R.id.button16);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -121,8 +131,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         marker2.setMap(mymap);
         marker3.setPosition(new LatLng(35.967604, 126.736843)); // 군산시청 좌표 마켓
         marker3.setMap(mymap);
-        marker4.setPosition(coord1);
-        marker4.setMap(mymap);
+        marker4.setPosition(new LatLng(35.942719,126.726729));
+
+        markers.add(marker4);
+
 
         InfoWindow infoWindow = new InfoWindow();
         infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter( this) {
@@ -149,8 +161,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         naverMap.setOnMapClickListener((coord, point) -> {
             infoWindow.close();
             infowindow1.close();
-            marker4.setPosition(point);
-            marker4.setMap(mymap);
+            if(marker_mode) {
+                marker4.setPosition(point);
+                marker4.setMap(mymap);
+            } else {
+                markers.add(addnewMarker(point));
+                infowindow1.open(marker4);
+                marker4.setPosition(point);
+                marker4.setMap(mymap);
+            }
 
             try {
                 addr = new GetAddress().execute(point).get();
@@ -161,6 +180,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             Log.d("STATE", addr);
             infowindow1.open(marker4);
+            Log.d("STATE", String.valueOf(markers.size()));
+
+            if(markers.size() >= 3)
+                makePolygon();
+
         });
 
 // 마커를 클릭하면:
@@ -356,6 +380,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, false);
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_MOUNTAIN, false);
         mymap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
+    }
+
+    public Marker addnewMarker(LatLng point) {
+        Marker newMarker = new Marker();
+
+        newMarker.setPosition(point);
+        newMarker.setMap(mymap);
+        return newMarker;
+    }
+
+    public void clearMarker() {
+        for(Marker m:markers) {
+            m.setMap(null);
+        }
+        markers.clear();
+        polygon.setMap(null);
+    }
+
+    public void ClickButton15(View v) {
+        if(marker_mode == true) {
+            marker_mode = false;
+        } else {
+            clearMarker();
+            marker_mode = true;
+        }
+    }
+
+    //새로운 마커로 폴리곤 셰이프 생성
+    public void makePolygon(){
+        ArrayList<LatLng> marker_pos = new ArrayList<LatLng>();
+        for(Marker x:markers){
+            marker_pos.add(x.getPosition());
+        }
+
+        polygon.setCoords(marker_pos);
+        polygon.setMap(mymap);
+    }
+
+    public void ClickButton16(View v) {
+
     }
 
 }

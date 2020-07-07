@@ -61,6 +61,11 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
             Log.d("STATE", sb.toString());
             String str = sb.toString();
             JSONObject jsonObject1 = new JSONObject(str);
+            JSONObject jsonCodeObject = new JSONObject(jsonObject1.getString("status"));
+
+            if(jsonCodeObject.getInt("code") != 0)
+                return "no address found";
+
             JSONArray jsonArray = jsonObject1.getJSONArray("results");
             Log.d("STATE", jsonArray.get(0).toString());
             JSONObject jsonObject2 = new JSONObject(jsonArray.get(0).toString());
@@ -79,7 +84,7 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
 
             Log.d("STATE", result.toString());
 
-            return  result.toString();
+            return result.toString();
 
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -101,6 +106,5 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
         Marker mark1 = new Marker();
     }
     protected void onCancelled() {
-
     }
 }
